@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        #city-input {
+            padding: 10px;
+            width: 70%;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #city-input:focus {
+            border-color: #0056b3;
+        }
+
+        #search-btn {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        #search-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .weather-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #007bff, #00bfff);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .weather-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .weather-info p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .container {
+            background-color: #444;
+        }
+
+        body.dark-mode #city-input {
+            background-color: #555;
+            color: #f0f0f0;
+            border-color: #777;
+        }
+
+        body.dark-mode #search-btn {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode #search-btn:hover {
+            background-color: #007bff;
+        }
+
+        body.dark-mode .weather-info {
+            background: linear-gradient(135deg, #0056b3, #007bff);
+        }
+
+        /* Loading Spinner */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Theme Toggle Button */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #city-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #search-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .weather-info {
+                padding: 15px;
+            }
+
+            .weather-info h2 {
+                font-size: 1.3rem;
+            }
+
+            .weather-info p {
+                font-size: 1rem;
+            }
+
+            .weather-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .weather-info h2 {
+                font-size: 1.2rem;
+            }
+
+            .weather-info p {
+                font-size: 0.9rem;
+            }
+
+            .weather-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="search-box">
+            <input type="text" id="city-input" placeholder="Enter city name">
+            <button id="search-btn">Get Weather</button>
+        </div>
+        <div id="weather-info">
+            <!-- Weather data will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle">🌞</button>
+
+    <script>
+        // API Key from OpenWeatherMap (Free Tier)
+        const apiKey = 'a2934423edeffc895174f1257720906d'; // Your API Key
+
+        // Function to fetch weather data
+        async function getWeather(city) {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            // Show loading spinner
+            document.getElementById('weather-info').innerHTML = '<div class="loader"></div>';
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.cod === 200) {
+                    displayWeather(data);
+                } else {
+                    displayError(data.message); // Display error message from API
+                }
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                displayError('An error occurred. Please try again later.');
+            }
+        }
+
+        // Function to display weather data
+        function displayWeather(data) {
+            const weatherInfo = document.getElementById('weather-info');
+            const weatherIcon = getWeatherIcon(data.weather[0].main);
+
+            weatherInfo.innerHTML = `
+                <div class="weather-info">
+                    <div class="weather-icon">${weatherIcon}</div>
+                    <h2>${data.name}</h2>
+                    <p><strong>Temperature:</strong> ${data.main.temp}°C</p>
+                    <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+                    <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
+                    <p><strong>Wind Speed:</strong> ${data.wind.speed} m/s</p>
+                    <p><strong>Pressure:</strong> ${data.main.pressure} hPa</p>
+                    <p><strong>Min Temp:</strong> ${data.main.temp_min}°C</p>
+                    <p><strong>Max Temp:</strong> ${data.main.temp_max}°C</p>
+                </div>
+            `;
+        }
+
+        // Function to get weather icon
+        function getWeatherIcon(weather) {
+            switch (weather.toLowerCase()) {
+                case 'clear':
+                    return '☀️';
+                case 'clouds':
+                    return '☁️';
+                case 'rain':
+                    return '🌧️';
+                case 'snow':
+                    return '❄️';
+                case 'thunderstorm':
+                    return '⛈️';
+                default:
+                    return '🌤️';
+            }
+        }
+
+        // Function to display error message
+        function displayError(message) {
+            const weatherInfo = document.getElementById('weather-info');
+            weatherInfo.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Event listener for the search button
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const city = document.getElementById('city-input').value;
+            if (city) {
+                getWeather(city);
+            } else {
+                displayError('Please enter a city name.');
+            }
+        });
+
+        // Event listener for Enter key
+        document.getElementById('city-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const city = document.getElementById('city-input').value;
+                if (city) {
+                    getWeather(city);
+                } else {
+                    displayError('Please enter a city name.');
+                }
+            }
+        });
+
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Check Local Storage for saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.add(savedTheme);
+            themeToggle.textContent = savedTheme === 'dark-mode' ? '🌜' : '🌞';
+        }
+
+        // Toggle Dark Mode
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark-mode' : 'light-mode');
+            themeToggle.textContent = isDarkMode ? '🌜' : '🌞';
+        });
+    </script>
+</body>
+</html>
